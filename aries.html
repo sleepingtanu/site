@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARIES Society</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000; 
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            scroll-behavior: smooth; 
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            background: transparent;
+            padding: 10px 0;
+            z-index: 10;
+        }
+
+        nav ul {
+            list-style-type: none;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .main-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            background-color: #000;
+        }
+
+        .left-right-container {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.8);
+            margin: 0 20px;
+        }
+
+        .video-container {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            border-radius: 10px;
+        }
+
+        video {
+            width: 95%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+            filter: brightness(80%) contrast(110%);
+        }
+
+        .info-box {
+            width: 450px;
+            height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            position: relative;
+            --border-size: 3px;
+            --border-angle: 0turn;
+            background-image: conic-gradient(
+                from var(--border-angle),
+                #213,
+                #112 50%,
+                #213
+            ),
+            conic-gradient(
+                from var(--border-angle),
+                transparent 20%,
+                #11005f,
+                #0464d3,
+                #8807de,
+                #af47f5,
+                #e99ef7
+            );
+            background-size: calc(100% - (var(--border-size) * 2))
+                calc(100% - (var(--border-size) * 2)),
+                cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            animation: bg-spin 3s linear infinite;
+        }
+
+        .info-box:hover {
+            animation-play-state: paused;
+        }
+
+        .info-content {
+            width: 400px;
+            height: 450px;
+            padding: 0px;
+            background: transparent;
+            border-radius: 10px;
+            box-shadow: 0;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            overflow: hidden;
+            text-align: justify;
+        }
+
+        .info-content h1 {
+            font-size: 1.8em;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            text-align: center;
+        }
+
+        .info-content p {
+            font-size: 1.2em;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            line-height: 1.2;
+            text-align: justify;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .events-section {
+            padding: 50px 0;
+            background-color: #000;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .event-boxes {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            width: 90%;
+        }
+
+        .event-box {
+            width: 250px;
+            height: 250px;
+            margin: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            --border-size: 3px;
+            --border-angle: 0turn;
+            background-image: conic-gradient(
+                from var(--border-angle),
+                #213,
+                #112 50%,
+                #213
+            ),
+            conic-gradient(
+                from var(--border-angle),
+                transparent 20%,
+                #11005f,
+                #0464d3,
+                #8807de,
+                #af47f5,
+                #e99ef7
+            );
+            background-size: calc(100% - (var(--border-size) * 2))
+                calc(100% - (var(--border-size) * 2)),
+                cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            animation: bg-spin 3s linear infinite;
+            transition: all 0.6s ease;
+            border-radius: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+        }
+
+        .event-box.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .event-box:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes bg-spin {
+            to {
+                --border-angle: 1turn;
+            }
+        }
+
+        @property --border-angle {
+            syntax: "<angle>";
+            inherits: true;
+            initial-value: 0turn;
+        }
+
+        .event-details {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            height: 300px;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            z-index: 100;
+             /* Adjust width as needed */
+  min-height: 50px; /* Set a minimum height */
+  height: auto; /* Allow height to grow */
+  resize: none; /* Prevent manual resizing if needed */
+  overflow: hidden;
+        }
+
+        .event-details h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .event-details p {
+            font-size: 1.2em;
+            line-height: 1.5;
+        }
+
+        .event-details .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            color: rgb(248, 245, 245);
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#">HOME</a></li>
+                <li><a href="#events-section">EVENTS</a></li>
+                <li><a href="#">TEAM</a></li>
+                <li><a href="#">CONTACT</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="main-content">
+        <div class="left-right-container">
+            <div class="video-container">
+                <video autoplay loop muted>
+                    <source src="Blue Purple Futuristic Artificial Intelligence Instagram Post (1).mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+            <div class="info-box">
+                <div class="info-content">
+                    <h1>Welcome to ARIES Society</h1>
+                    <p>
+                        ARIES is a premier society focused on Artificial Intelligence and Machine Learning (AI-ML). 
+                        We conduct workshops, hackathons, and contests to engage and educate students in the latest AI technologies.
+                        Join us for hands-on experience and networking with industry experts.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="events-section" class="events-section">
+        <h1>Upcoming Events</h1>
+        <div class="event-boxes">
+    <div class="event-box" data-title="Artificial Intelligence Safety Career Fellowships (AISCF)" data-description="1. Overview: 500+ registrations from enthusiastic students eager to delve into the field of AI safety.
+2. Duration & Content: The course spanned 8 weeks, providing an in-depth overview of AI safety.
+3. Engagement & Learning: Weekly reading groups, presentations, guest lectures, and projects.
+4. Mentorship & Career Guidance: Personal career advice, mentorship, and networking opportunities from top institutions and organizations.
+5. Culminating Experience: The program concluded with a fully sponsored AI safety retreat in Oxford. 6. Future Opportunities: Students applied to prestigious fellowships like the Stanford X-risk and Swiss X-risk programs.
+7. Impact and Recognition: The fellowship provided a strong foundation in AI safety, and opened doors for participants to pursue advanced research and career opportunities in this critical and rapidly evolving field. 
+">
+        <img src="event1.png" alt="Event 1" style="width: 95%; height: 95%; border-radius: 1px; object-fit: cover;">
+    </div>
+    <div class="event-box" data-title="Talk on ML in finance with hands-on tutorial
+    " data-description="150+ students attended out talk on ML in finance and learnt about various techniques that can be used to create profitable alphas. We had an actual attendance of 100+ students, majorly from first and second year.
+We also had a small hands-on tutorial on how to make an alpha using market sentiment data the can be extracted using ML techniques.
+Made a GitHub repository for the same with additional content on AIML and finance
+">
+        <img src="event2.png" alt="Event 2" style="width: 95%; height: 95%; border-radius: 1px; object-fit: cover;">
+    </div>
+    <div class="event-box" data-title="Talk on Prompt Engineering and AI with hands on tutorial
+    " data-description="Hosted a workshop in Pravatti 2024 in collaboration with OCS. The workshop educated people on prompt Engineering and how it can be used for research, industries of day to day activities. Speakers for the same were:
+Tanmoy Chakraborty - Associate Professor @ IITD, Founder: Lab for Computational Social Systems, ACM Distinguished Speaker.
+Sumit Bhatia -Sr. ML Scientist @Adobe, ex - IBM, Faculty @ IIITD
+Nishtha Madaan - Research Scientist @IBM, PhD @IITD.
+We had a footfall of 150+ students across departments. There was also a hands-on tutorial on prompt-engineering and generating better images using it.
+">
+        <img src="event3.png" alt="Event 3" style="width: 95%; height: 95%; border-radius: 1px; object-fit: cover;">
+    </div>
+    <div class="event-box" data-title="Hackathon on AI for social good
+    " data-description="Machine Learning hackathon on AI for social good in collaboration with Kaizen 2024.
+The problem statement for this Hackathon revolved around developing Machine Learning models capable of detecting and identifying claims in social media posts. It was hosted on Kaggle. The participants had to work on two critical tasks:
+Claim Detection: The first task involved binary classification, where participants had to determine whether a given piece of text from a social media post is making a claim or not. 
+Claim Span Identification: It is a critical task in the process of fact-checking and misinformation analysis, focusing on precisely locating the specific segment of text that constitutes a claim within a larger body of text.
+Students had to work in teams to solve the problem statement.
+We saw a huge interest from students and participation from within and outside IIT Delhi. There were 300+ registrations and we had 50+ amazing submissions. The top 3 submissions based on a weighted score were awarded prizes.
+">
+        <img src="event4.png" alt="Event 4" style="width: 95%; height: 95%; border-radius: 1px; object-fit: cover;">
+    </div>
+    <div class="event-box" data-title="Innov8 hackathon in collaboration with Eightfold.AI during Tryst 2024
+    " data-description="We had a fun problem statement that involved identifying important keywords and phrases in a resume given a query.
+We saw huge participation with 350+ registration. There were teams of 2-3 students per team and we had over 50 submissions. The top ten submissions were selected by our team for a final presentation with Eightfold.AI.
+The top 2 teams were rewarded with cash prizes.
+We also gave T-shirts and water  bottles to all participants.
+The team from Eightfold also gave a presentation on multiple NLP techniques and discussed various ways to solve the problem
+">
+        <img src="event5.png" alt="Event 5" style="width: 95%; height: 95%; border-radius: 1px; object-fit: cover;">
+    </div>
+    <div class="event-box" data-title="Intel GenAI hackathon during Tryst 2024" data-description="We hosted a GenAI hackathon in collaboration with Intel 
+The participants were tasked to solve various GenAI problems using resources provided by intel.
+We had 400+ registrations for the event, and more than 80 students for the actual event.
+">
+        <img src="event6.png" alt="Event 6" style="width: 95%; height: 95%; border-radius: 1px; object-fit: cover;">
+    </div>
+    <div class="event-box" data-title="AI Safety Workshop" data-description="We hosted a talk on AI Safety where we invited Aditya Prasad, who’s a researcher at IISc Bangalore, to give and talk and enlighten students on the exciting field of AI Safety.
+We had over 100 registrations for the event and more than 60 students attended the event.
+Students were also given free books related to the topic.
+
+">
+        <img src="event7.png" alt="Event 6" style="width: 95%; height: 95%; border-radius: 1px; object-fit: cover;">
+    </div>
+    <div class="event-box" data-title="Session on LLMs in collaboration with Hanooman.ai" data-description="We had the founder of hanooman.ai deliver a talk on LLMs and how Indian Languages are under-represented in the current LLM scenario. 
+We also got detailed insights on how LLMs are trained and how Hanooman.AI is working to create a Generative LLM for Indian Languages.
+The event was held at extremely short notice so we only had a footfall of around 60-70 students.
+">
+        <img src="event8.png" alt="Event 6" style="width: 95%; height: 95%; border-radius: 1px; object-fit: cover;">
+    </div>
+    <div class="event-box" data-title="Panel discussion on GenAI with multiple industry leaders at LH325
+
+" data-description="Our biggest and one of the most successful events was the Generative AI talk where we had industry experts from Amazon, Microsoft, Adobe etc.
+The meet-up served as an opportunity for several students to interact and network with industry experts and discuss everything GenAI
+At the end of the event, we had a successful Panel Discussion where several important topics were discussed.
+The event was open to people from outside IIT Delhi as well, and we had a total participation of more than 150 people.
+">
+        <img src="event9.png" alt="Event 6" style="width: 95%; height: 95%; border-radius: 1px; object-fit: cover;">
+    </div>
+</div>
+
+    </section>
+
+    <div class="event-details" id="event-details">
+        <button class="close-btn">&times;</button>
+        <h2 id="event-title"></h2>
+        <p id="event-description"></p>
+    </div>
+
+    <script>
+        const eventBoxes = document.querySelectorAll(".event-box");
+        const eventDetails = document.getElementById("event-details");
+        const eventTitle = document.getElementById("event-title");
+        const eventDescription = document.getElementById("event-description");
+        const closeBtn = document.querySelector(".close-btn");
+
+        eventBoxes.forEach(box => {
+            box.addEventListener("click", () => {
+                const title = box.getAttribute("data-title");
+                const description = box.getAttribute("data-description");
+                eventTitle.textContent = title;
+                eventDescription.textContent = description;
+                eventDetails.style.display = "flex";
+            });
+        });
+
+        closeBtn.addEventListener("click", () => {
+            eventDetails.style.display = "none";
+        });
+
+        window.addEventListener("scroll", function() {
+            eventBoxes.forEach(function(box) {
+                var boxPosition = box.getBoundingClientRect().top;
+                var windowHeight = window.innerHeight;
+
+                if (boxPosition < windowHeight - 150) {
+                    box.classList.add("active");
+                } else {
+                    box.classList.remove("active");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
